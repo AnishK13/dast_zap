@@ -1,0 +1,7 @@
+{
+  "name": "dast_zap_frontend",
+  "private": true,
+  "scripts": {
+    "serve": "npx serve -l 5000"
+  }
+}

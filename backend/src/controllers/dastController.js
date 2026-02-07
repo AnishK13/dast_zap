@@ -1,9 +1,5 @@
 const path = require("path");
 const fs = require("fs").promises;
-const { exec: execCallback } = require("child_process");
-const { promisify } = require("util");
-const execPromise = promisify(execCallback);
-
 const { runZapScan } = require("../services/zapService");
 const { exec } = require('child_process');
 const util = require('util');

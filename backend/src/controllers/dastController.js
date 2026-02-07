@@ -5,6 +5,12 @@ const { promisify } = require("util");
 const execPromise = promisify(execCallback);
 
 const { runZapScan } = require("../services/zapService");
+const { exec } = require('child_process');
+const util = require('util');
+const path = require('path');
+const fs = require('fs').promises;
+const execPromise = util.promisify(exec);
+const cors = require("cors");
 
 /**
  * POST /api/scan/dast

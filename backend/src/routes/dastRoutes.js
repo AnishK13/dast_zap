@@ -1,5 +1,5 @@
 const express = require("express");
-const { runDastScan } = require("../controllers/scanController");
+const { runDastScan } = require("../controllers/dastController");
 
 const router = express.Router();
 

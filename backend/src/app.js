@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-const scanRoutes = require("./routes/scanRoutes");
+const scanRoutes = require("./routes/dastRoutes");
 
 function createApp() {
   const app = express();

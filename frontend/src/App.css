@@ -1,0 +1,78 @@
+/* Dashboard Wrapper */
+.dashboard-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: var(--accent, #4a9eff);
+}
+
+.dashboard-header p {
+  color: #b0b0b0;
+  margin-bottom: 50px;
+}
+
+/* Tool Grid */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+/* Individual Tool Card */
+.tool-card {
+  background: #141414;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tool-card:hover {
+  border-color: #4a9eff;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.tool-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.tool-card h3 {
+  margin: 15px 0 10px;
+  font-size: 1.3rem;
+}
+
+.tool-card p {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.launch-btn {
+  background: transparent;
+  border: 1px solid #4a9eff;
+  color: #4a9eff;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tool-card:hover .launch-btn {
+  background: #4a9eff;
+  color: #000;
+}

@@ -6,10 +6,6 @@ const util = require('util');
 const execPromise = util.promisify(exec);
 const cors = require("cors");
 
-/**
- * POST /api/scan/dast
- * Body: { url: string, quickScan?: boolean }
- */
 async function runDastScan(req, res) {
   const { url, quickScan } = req.body || {};
 

@@ -17,19 +17,32 @@ async function runDastScan(req, res) {
     return res.status(400).json({ error: "Target URL is required" });
   }
 
+  const scanId = Date.now().toString();
+  const dastResultsDir = path.resolve(__dirname, "..", "scans", "dast_results");
+
   try {
+    await fs.mkdir(dastResultsDir, { recursive: true });
+
     console.log(
       `Starting ZAP scan for ${url}${quickScan ? " (quick scan)" : ""}`
     );
 
-    const results = await runZapScan(url, { quickScan: !!quickScan });
+    const findings = await runZapScan(url, { quickScan: !!quickScan });
 
-    return res.json({
+    const report = {
       success: true,
+      scanId,
       target: url,
-      totalFindings: results.length,
-      findings: results
-    });
+      totalFindings: findings.length,
+      findings
+    };
+
+    const reportFileName = `zap-report-${scanId}.json`;
+    const reportPath = path.join(dastResultsDir, reportFileName);
+    await fs.writeFile(reportPath, JSON.stringify(report, null, 2), "utf-8");
+    console.log(`[DAST] Report saved to ${reportPath}`);
+
+    return res.json(report);
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -47,13 +60,15 @@ async function runSastScan(req, res) {
   }
 
   const scanId = Date.now().toString();
-  const workDir = path.resolve(__dirname, 'scans', scanId);
-  const reportsDir = path.join(workDir, 'reports');
-  const repoPath = path.join(workDir, 'repo');
+  const workDir = path.resolve(__dirname, "..", "scans", scanId);
+  const reportsDir = path.join(workDir, "reports");
+  const repoPath = path.join(workDir, "repo");
+  const sastResultsDir = path.resolve(__dirname, "..", "scans", "sast_results");
 
   try {
     await fs.mkdir(repoPath, { recursive: true });
     await fs.mkdir(reportsDir, { recursive: true });
+    await fs.mkdir(sastResultsDir, { recursive: true });
 
     //Build Auth URL
     let authRepoUrl = repoUrl;
@@ -93,20 +108,28 @@ async function runSastScan(req, res) {
       }
     }
 
-    const jsonContent = await fs.readFile(path.join(reportsDir, reportFile), 'utf-8');
+    const jsonContent = await fs.readFile(path.join(reportsDir, reportFile), "utf-8");
     const jsonReport = JSON.parse(jsonContent);
     console.log(jsonReport);
 
-    res.json({
+    const report = {
       success: true,
       scanId,
+      repoUrl,
       jsonReport,
       summary: {
         totalFindings: jsonReport.results?.length || 0,
         errors: jsonReport.errors?.length || 0,
         pathsScanned: jsonReport.paths?.scanned?.length || 0
       }
-    });
+    };
+
+    const sastReportFileName = `semgrep-report-${scanId}.json`;
+    const sastReportPath = path.join(sastResultsDir, sastReportFileName);
+    await fs.writeFile(sastReportPath, JSON.stringify(report, null, 2), "utf-8");
+    console.log(`[SAST] Report saved to ${sastReportPath}`);
+
+    res.json(report);
 
   } catch (error) {
     console.error('Scan error:', error);
@@ -129,7 +152,7 @@ async function runContainerScan(req, res) {
   }
 
   const scanId = Date.now().toString();
-  const workDir = path.resolve(__dirname, 'scans', `trivy-${scanId}`);
+  const workDir = path.resolve(__dirname, "..", "scans", `trivy-${scanId}`);
   const reportsDir = path.join(workDir, 'reports');
   const reportFile = 'trivy-report.json';
   const reportPath = path.join(reportsDir, reportFile);
@@ -198,7 +221,7 @@ async function runAppScan(req, res) {
   }
 
   const scanId = Date.now().toString();
-  const workDir = path.resolve(__dirname, 'scans', `mobsf-${scanId}`);
+  const workDir = path.resolve(__dirname, "..", "scans", `mobsf-${scanId}`);
   const reportsDir = path.join(workDir, 'reports');
   const reportFile = 'mobsf-report.json';
   const reportPath = path.join(reportsDir, reportFile);
